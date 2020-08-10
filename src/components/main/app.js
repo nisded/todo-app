@@ -16,7 +16,9 @@ export default class App extends Component {
 				{ label: 'Drink Coffee', important: false, done: false, id: 1 },
 				{ label: 'Build Todo App', important: true, done: false, id: 2 },
 				{ label: 'Have a lunch', important: false, done: true, id: 3 }
-			]
+			],
+			search: '',
+			filter: 'all'
 		};
 
 		this.onToggleImportant = this.onToggleImportant.bind(this);
@@ -24,6 +26,8 @@ export default class App extends Component {
 		this.onDeleteTodo = this.onDeleteTodo.bind(this);
 		this.createTodo = this.createTodo.bind(this);
 		this.onAddTodo = this.onAddTodo.bind(this);
+		this.onSearchChange = this.onSearchChange.bind(this);
+		this.onFilterChange = this.onFilterChange.bind(this);
 	}
 
 	// toggle boolean property by id in array 
@@ -88,18 +92,48 @@ export default class App extends Component {
 		});
 	}
 
+	onSearchChange(search) {
+		this.setState({ search });
+	}
+
+	onFilterChange(filter) {
+		this.setState({ filter });
+	}
+
+	searchTodos(todos, search){
+		if (search.length === 0)
+			return todos;	
+
+		return todos.filter(todo => todo.label.toLowerCase().indexOf(search.toLowerCase()) > -1);
+	}
+
+	filterTodos(todos, filter){
+		switch(filter){
+			case 'all':
+				return todos;
+			case 'active':
+				return todos.filter(todo => !todo.done);
+			case 'done':
+				return todos.filter(todo => todo.done);
+			default:
+				return todos;
+		}
+	}
+
 	render() {
-		const doneCnt = this.state.todos.filter(todo => todo.done).length;
-		const todoCnt = this.state.todos.length - doneCnt;
+		const { todos, search, filter } = this.state;
+		const doneCnt = todos.filter(todo => todo.done).length;
+		const todoCnt = todos.length - doneCnt;
+		const visibleTodos = this.filterTodos(this.searchTodos(todos, search), filter);
 		return (	
 			<div className="todo-app">
 				<AppHeader todoCnt={todoCnt} doneCnt={doneCnt} />
 				<div className="d-flex my-2">
-					<SearchPanel />
-					<ItemStatusFilter />
+					<SearchPanel onSearchChange={this.onSearchChange}/>
+					<ItemStatusFilter filter={filter} onFilterChange={this.onFilterChange} />
 				</div>
 				<TodoList 
-					todos={this.state.todos} 
+					todos={visibleTodos} 
 					onToggleImportant={this.onToggleImportant}
 					onToggleDone={this.onToggleDone}
 					onDeleteTodo={this.onDeleteTodo}
