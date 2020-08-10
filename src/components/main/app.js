@@ -1,11 +1,11 @@
 import React from 'react';
 
-import AppHeader from '../app-header';
-import SearchPanel from '../search-panel';
-import ItemStatusFilter from '../item-status-filter';
-import TodoList from '../todo-list';
-import ItemAddForm from '../item-add-form';
-import './app.css';
+import AppHeader from '../AppHeader';
+import SearchPanel from '../SearchPanel';
+import ItemStatusFilter from '../ItemStatusFilter';
+import TodoList from '../TodoList';
+import ItemAddForm from '../ItemAddForm';
+import './App.css';
 
 const todoData = [
 	{ label: 'Drink Coffee', important: false, id: 1 },
